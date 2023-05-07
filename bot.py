@@ -44,7 +44,6 @@ def run():
 
     df = indicators.supertrend(df)
 
-    # Execute
     execute(df)
 
 run()
