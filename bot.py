@@ -5,17 +5,14 @@ import warnings
 warnings.filterwarnings('ignore')
 import datetime
 
-# Import our secret.py file
 import secret
-# Import our supertrend.py file
 import supertrend as indicators
 
 ASSET_NAME = 'BTC-PERP'
 TIMEFRAME = '5m'
 FETCHING_LIMIT = 1500
-TRADE_SIZE = 0.0004 # ~ 10$ worth of Bitcoin right now
+TRADE_SIZE = 0.0004 
 
-# Initiate our ccxt connection
 exchange = ccxt.ftx({
     "apiKey": secret.PUBLIC_KEY,
     "secret": secret.SECRET_KEY
@@ -40,14 +37,11 @@ def execute(df):
         print(curr_datetime + ', ' + ASSET_NAME + ' sold at price ' + str(curr_close) + '\n' + '\n')
 
 def run():
-    # Fetch our Bitcoin price data (Open, High, Low, Close, Volume)
     bars = exchange.fetch_ohlcv(ASSET_NAME, timeframe=TIMEFRAME, limit=FETCHING_LIMIT)
     
-    # Create our pandas data frame
     df = pd.DataFrame(bars[:], columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
 
-    # Add Supertrend indicator calculation to our data frame
     df = indicators.supertrend(df)
 
     # Execute
